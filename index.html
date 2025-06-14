@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Placas 102</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { padding: 8px; margin: 5px; }
+    .resultado { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Buscador de Placas 102</h2>
+  <input type="text" id="inputPlaca" placeholder="Ingrese una placa"> 
+  <button onclick="buscarPlaca()">Buscar</button> 
+  <p class="resultado" id="resultado"></p> 
+
+  <script>
+    const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B"];
+    const placas = ["YFC110B", "1TBT3", "YHK447B", "YFU169AVW"];
+
+    document.getElementById('inputPlaca').addEventListener('input', function () {
+      this.value = this.value.toUpperCase();
+    });
+
+    function buscarPlaca() {
+      const placa = document.getElementById('inputPlaca').value.trim();
+      const resultado = document.getElementById('resultado');
+
+      if (placas.includes(placa)) {
+        resultado.textContent = "La placa " + placa + " es 102 ✅";
+      } else if (placasTemporales.includes(placa)) {
+        resultado.textContent = "La placa " + placa + " es 102 temporal 🕒";
+      } else {
+        resultado.textContent = "La placa " + placa + " es 101 ❌";
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
