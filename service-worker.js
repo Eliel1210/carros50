@@ -1,16 +1,27 @@
-const CACHE_NAME= "mi_app_v1";
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js"
-  ];
+const CACHE_NAME = 'placas-cache-v2'; // cambia el número en cada nueva versión
+const urlsToCache = ['.', 'index.html', 'manifest.json', 'icon.png'];
+
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('placas-cache').then(cache => {
-      return cache.addAll(['.', 'index.html', 'manifest.json', 'icon.png']);
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
     })
   );
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(name => {
+          if (name !== CACHE_NAME) {
+            return caches.delete(name);
+          }
+        })
+      );
+    })
+  );
+  return self.clients.claim();
 });
 
 self.addEventListener('fetch', e => {
