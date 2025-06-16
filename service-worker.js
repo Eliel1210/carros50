@@ -1,3 +1,10 @@
+const CACHE_NAME= "mi_app_v1";
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/style.css",
+  "/script.js"
+  ];
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open('placas-cache').then(cache => {
