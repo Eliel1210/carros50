@@ -15,13 +15,15 @@
   <h2>Buscador de Placas 102</h2>
   <input type="text" id="inputPlaca" placeholder="Ingrese una placa"> 
   <button onclick="buscarPlaca()">Buscar</button> 
+  <button onclick="borrarInput()">Borrar</button>
   <p class="resultado" id="resultado"></p> 
 
   <script>
     const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B", "YME457A", 
     "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", 
     "XS5145A", "SY59773", ];
-    const placas = ["YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
+    
+    const = ["YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
     "YDM580A", "XH7015A", "W29AZX", "YJL7449", "XY5132A", "YJT654B", "YHT6309", "YFT777B", "YEE271B", 
     "NJJ7755", "YAT101B", "SL02478", "XT1557A", "XV83007", "YFE165A", "YKB365A", "YJL8592", "PM9640A", 
     "YKD551A", "YJR794B", "YJ4343A", "NDP6140", "YSS129A", "XZL281A", "YHT512A", "YHY483A", "YKF2411", 
@@ -50,9 +52,9 @@
     "YTK955A", "YM5316A", "XHT512A", "YGG477A", "YFU294B", "A076XDC", "YJK2150", "PDZ7761", "YNB541B", 
     "YHS826B", "YKG543A", "YTP677A", "XYE457A", "YVA624A", "YSY729B", "LTW909A", "WB2059C", "YGE400A",
     "YVA018A", "YSY661B", "YFE102A", "YRR285B", "YRS423B", "XUH805B", "YTB215B", "YRR970B", "LUZ444B", 
-    "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B", ]; 
+    "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B", ];
 
-    document.getElementById('inputPlaca').addEventListener('input', function () {
+     document.getElementById('inputPlaca').addEventListener('input', function () {
       this.value = this.value.toUpperCase();
     });
 
@@ -67,6 +69,11 @@
       } else {
         resultado.textContent = "La placa " + placa + " es 101 ❌";
       }
+    }
+
+    function borrarInput() {
+      document.getElementById('inputPlaca').value = '';
+      document.getElementById('resultado').textContent = '';
     }
 
     if ('serviceWorker' in navigator) {
