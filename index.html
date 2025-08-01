@@ -6,9 +6,12 @@
   <title>Buscador de Placas 102</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; display: none; }
     input, button { padding: 8px; margin: 5px; }
     .resultado { margin-top: 15px; font-weight: bold; }
+    .verde { color: green; }
+    .amarillo { color: goldenrod; }
+    .rojo { color: red; }
   </style>
 </head>
 <body>
@@ -19,12 +22,11 @@
   <p class="resultado" id="resultado"></p> 
 
   <script>
-    const CONTRASEÑA = "clave102";
+    const CONTRASEÑA = "clave102"; // Cambia esta clave por la que quieras
     const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B", "YME457A", 
-    "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", 
-    "XS5145A", "SY59773", ];
-    
-    const placas = ["YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
+    "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", "XS5145A", "SY59773"];
+
+    const placas =[ "YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
     "YDM580A", "XH7015A", "W29AZX", "YJL7449", "XY5132A", "YJT654B", "YHT6309", "YFT777B", "YEE271B", 
     "NJJ7755", "YAT101B", "SL02478", "XT1557A", "XV83007", "YFE165A", "YKB365A", "YJL8592", "PM9640A", 
     "YKD551A", "YJR794B", "YJ4343A", "NDP6140", "YSS129A", "XZL281A", "YHT512A", "YHY483A", "YKF2411", 
@@ -53,8 +55,8 @@
     "YTK955A", "YM5316A", "XHT512A", "YGG477A", "YFU294B", "A076XDC", "YJK2150", "PDZ7761", "YNB541B", 
     "YHS826B", "YKG543A", "YTP677A", "XYE457A", "YVA624A", "YSY729B", "LTW909A", "WB2059C", "YGE400A",
     "YVA018A", "YSY661B", "YFE102A", "YRR285B", "YRS423B", "XUH805B", "YTB215B", "YRR970B", "LUZ444B", 
-    "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B", ];
-    
+    "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B",];
+
     function verificarAcceso() {
       const accesoConcedido = localStorage.getItem('acceso102');
 
@@ -72,32 +74,4 @@
       }
     }
 
-
-     document.getElementById('inputPlaca').addEventListener('input', function () {
-      this.value = this.value.toUpperCase();
-    });
-
-    function buscarPlaca() {
-      const placa = document.getElementById('inputPlaca').value.trim();
-      const resultado = document.getElementById('resultado');
-
-      if (placas.includes(placa)) {
-        resultado.textContent = "La placa " + placa + " es 102 ✅";
-      } else if (placasTemporales.includes(placa)) {
-        resultado.textContent = "La placa " + placa + " es 102 temporal 🕒";
-      } else {
-        resultado.textContent = "La placa " + placa + " es 101 ❌";
-      }
-    }
-
-    function borrarInput() {
-      document.getElementById('inputPlaca').value = '';
-      document.getElementById('resultado').textContent = '';
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
-</body>
-</html>
+    
