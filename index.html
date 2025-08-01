@@ -53,6 +53,24 @@
     "YHS826B", "YKG543A", "YTP677A", "XYE457A", "YVA624A", "YSY729B", "LTW909A", "WB2059C", "YGE400A",
     "YVA018A", "YSY661B", "YFE102A", "YRR285B", "YRS423B", "XUH805B", "YTB215B", "YRR970B", "LUZ444B", 
     "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B", ];
+    
+    function verificarAcceso() {
+      const accesoConcedido = localStorage.getItem('acceso102');
+
+      if (accesoConcedido === 'true') {
+        document.body.style.display = 'block';
+      } else {
+        const intento = prompt("Introduce la contraseña para acceder:");
+        if (intento === CONTRASEÑA) {
+          localStorage.setItem('acceso102', 'true');
+          document.body.style.display = 'block';
+        } else {
+          alert("Contraseña incorrecta. Acceso denegado.");
+          document.body.innerHTML = "<h2>Acceso denegado</h2>";
+        }
+      }
+    }
+
 
      document.getElementById('inputPlaca').addEventListener('input', function () {
       this.value = this.value.toUpperCase();
