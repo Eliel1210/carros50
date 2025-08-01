@@ -73,5 +73,40 @@
         }
       }
     }
+    
+    document.getElementById('inputPlaca').addEventListener('input', function () {
+      this.value = this.value.toUpperCase();
+    });
+
+    function buscarPlaca() {
+      const placa = document.getElementById('inputPlaca').value.trim();
+      const resultado = document.getElementById('resultado');
+
+      if (placas.includes(placa)) {
+        resultado.textContent = "La placa " + placa + " es 102 ✅";
+        resultado.className = "resultado verde";
+      } else if (placasTemporales.includes(placa)) {
+        resultado.textContent = "La placa " + placa + " es 102 temporal 🕒";
+        resultado.className = "resultado amarillo";
+      } else {
+        resultado.textContent = "La placa " + placa + " es 101 ❌";
+        resultado.className = "resultado rojo";
+      }
+    }
+
+    function borrarInput() {
+      document.getElementById('inputPlaca').value = '';
+      document.getElementById('resultado').textContent = '';
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    // Llamar a verificación de contraseña al cargar
+    window.onload = verificarAcceso;
+  </script>
+</body>
+</html>
 
     
