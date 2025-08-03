@@ -18,45 +18,27 @@
     .mensaje { background-color: #eee; padding: 8px; border-radius: 5px; margin-bottom: 5px; }
   </style>
 </head>
-<!-- Firebase -->
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDDftcO_zY01JAFkM_Gi_SK_mDYgM4aPfU",
-  authDomain: "carros102-55a32.firebaseapp.com",
-  databaseURL: "https://carros102-default-rtdb.firebaseio.com",
-  projectId: "carros102-55a32",
-  storageBucket: "carros102-55a32.firebasestorage.app",
-  messagingSenderId: "783382590303",
-  appId: "1:783382590303:web:7a34edcaeb54a07d4c3cea",
-  measurementId: "G-8P2Z9F4V4P"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+    apiKey: "AIzaSyDDftcO_zY01JAFkM_Gi_SK_mDYgM4aPfU",
+    authDomain: "carros102-55a32.firebaseapp.com",
+    databaseURL: "https://carros102-55a32-default-rtdb.firebaseio.com",
+    projectId: "carros102-55a32",
+    storageBucket: "carros102-55a32.appspot.com",
+    messagingSenderId: "783382590303",
+    appId: "1:783382590303:web:7a34edcaeb54a07d4c3cea",
+    measurementId: "G-8P2Z9F4V4P"
   };
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 </script>
+
 <body>
-  <div id="chat-container">
-  <h3>¿Falta alguna placa?</h3>
-  <input type="text" id="chatInput" placeholder="Escribe la placa faltante">
-  <button onclick="enviarMensaje()">Enviar</button>
-  <ul id="chatMensajes" style="list-style: none; padding-left: 0;"></ul>
-</div>
   <h1>Buscador de Placas 102</h1>
 
   <input type="text" id="inputPlaca" placeholder="Ingresa una placa">
@@ -65,18 +47,17 @@ const analytics = getAnalytics(app);
   <div id="resultado"></div>
 
   <div id="chat-container">
-    <h3>¿Falta una placa?</h3>
-    <input type="text" id="placaFaltante" placeholder="Escribe la placa faltante">
-    <button onclick="enviarPlaca()">Enviar</button>
-    <div id="chat-mensajes"></div>
+    <h3>¿Falta alguna placa?</h3>
+    <input type="text" id="chatInput" placeholder="Escribe la placa faltante">
+    <button onclick="enviarMensaje()">Enviar</button>
+    <ul id="chatMensajes" style="list-style: none; padding-left: 0;"></ul>
   </div>
 
   <script>
     const CONTRASEÑA = "clave102";
 
     const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B", "YME457A", 
-      "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", "XS5145A", "SY59773"];
-
+    "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", "XS5145A", "SY59773"];
     const placas = [ "YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
       "YDM580A", "XH7015A", "W29AZX", "YJL7449", "XY5132A", "YJT654B", "YHT6309", "YFT777B", "YEE271B", 
       "NJJ7755", "YAT101B", "SL02478", "XT1557A", "XV83007", "YFE165A", "YKB365A", "YJL8592", "PM9640A", 
@@ -115,13 +96,11 @@ const analytics = getAnalytics(app);
       const accesoConcedido = localStorage.getItem('acceso102');
       if (accesoConcedido === 'true') {
         document.body.style.display = 'block';
-        mostrarChat();
       } else {
         const intento = prompt("Introduce la contraseña para acceder:");
         if (intento === CONTRASEÑA) {
           localStorage.setItem('acceso102', 'true');
           document.body.style.display = 'block';
-          mostrarChat();
         } else {
           alert("Contraseña incorrecta. Acceso denegado.");
           document.body.innerHTML = "<h2>Acceso denegado</h2>";
@@ -150,39 +129,31 @@ const analytics = getAnalytics(app);
       document.getElementById('resultado').textContent = '';
     }
 
-    function enviarPlaca() {
-      const nuevaPlaca = document.getElementById('placaFaltante').value.trim().toUpperCase();
-      if (nuevaPlaca === '') return;
+    function enviarMensaje() {
+      const input = document.getElementById('chatInput');
+      const mensaje = input.value.trim().toUpperCase();
+      if (mensaje === '') return;
 
-      let placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
-
-      if (!placasFaltantes.includes(nuevaPlaca)) {
-        placasFaltantes.push(nuevaPlaca);
-        localStorage.setItem('placasFaltantes', JSON.stringify(placasFaltantes));
-        mostrarChat();
-        document.getElementById('placaFaltante').value = '';
-      }
-    }
-
-    function mostrarChat() {
-      const contenedor = document.getElementById('chat-mensajes');
-      contenedor.innerHTML = '';
-      const placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
-
-      placasFaltantes.forEach(placa => {
-        const div = document.createElement('div');
-        div.className = 'mensaje';
-        div.textContent = `Placa sugerida: ${placa}`;
-        contenedor.appendChild(div);
+      db.ref('mensajes').push({
+        placa: mensaje,
+        timestamp: Date.now()
       });
+
+      input.value = '';
     }
 
-    function limpiarPlacasYaExistentes() {
-      let placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
-      placasFaltantes = placasFaltantes.filter(p =>
-        !placas.includes(p) && !placasTemporales.includes(p)
-      );
-      localStorage.setItem('placasFaltantes', JSON.stringify(placasFaltantes));
+    function cargarMensajes() {
+      const lista = document.getElementById('chatMensajes');
+      db.ref('mensajes').on('value', snapshot => {
+        lista.innerHTML = '';
+        const datos = snapshot.val();
+        for (let key in datos) {
+          const placa = datos[key].placa;
+          const li = document.createElement('li');
+          li.textContent = `Placa faltante: ${placa}`;
+          lista.appendChild(li);
+        }
+      });
     }
 
     if ('serviceWorker' in navigator) {
@@ -191,51 +162,16 @@ const analytics = getAnalytics(app);
 
     window.onload = function () {
       verificarAcceso();
-      limpiarPlacasYaExistentes();
-      mostrarChat();
+      cargarMensajes();
     };
 
     document.getElementById('inputPlaca').addEventListener('input', function () {
       this.value = this.value.toUpperCase();
     });
 
-    document.getElementById('placaFaltante').addEventListener('input', function () {
+    document.getElementById('chatInput').addEventListener('input', function () {
       this.value = this.value.toUpperCase();
     });
   </script>
-  <script>
-  function enviarMensaje() {
-    const input = document.getElementById('chatInput');
-    const mensaje = input.value.trim().toUpperCase();
-    if (mensaje === '') return;
-
-    db.ref('mensajes').push({
-      placa: mensaje,
-      timestamp: Date.now()
-    });
-
-    input.value = '';
-  }
-
-  function cargarMensajes() {
-    const lista = document.getElementById('chatMensajes');
-    db.ref('mensajes').on('value', snapshot => {
-      lista.innerHTML = '';
-      const datos = snapshot.val();
-      for (let key in datos) {
-        const placa = datos[key].placa;
-        const li = document.createElement('li');
-        li.textContent = `Placa faltante: ${placa}`;
-        lista.appendChild(li);
-      }
-    });
-  }
-
-  // Ejecutar cuando la página carga
-  window.onload = function () {
-    if (typeof verificarAcceso === "function") verificarAcceso();
-    cargarMensajes();
-  };
-</script>
 </body>
 </html>
