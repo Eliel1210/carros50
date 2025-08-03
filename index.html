@@ -143,18 +143,25 @@
     }
 
     function cargarMensajes() {
-      const lista = document.getElementById('chatMensajes');
-      db.ref('mensajes').on('value', snapshot => {
-        lista.innerHTML = '';
-        const datos = snapshot.val();
-        for (let key in datos) {
-          const placa = datos[key].placa;
-          const li = document.createElement('li');
-          li.textContent = `Placa faltante: ${placa}`;
-          lista.appendChild(li);
-        }
-      });
+  const lista = document.getElementById('chatMensajes');
+  db.ref('mensajes').on('value', snapshot => {
+    lista.innerHTML = '';
+    const datos = snapshot.val();
+    for (let key in datos) {
+      const placa = datos[key].placa;
+
+      // Si la placa ya está en la lista oficial, eliminarla del chat
+      if (placas.includes(placa) || placasTemporales.includes(placa)) {
+        db.ref('mensajes/' + key).remove();
+        continue;
+      }
+
+      const li = document.createElement('li');
+      li.textContent = `Placa faltante: ${placa}`;
+      lista.appendChild(li);
     }
+  });
+}
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js');
