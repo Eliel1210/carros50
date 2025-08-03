@@ -18,7 +18,44 @@
     .mensaje { background-color: #eee; padding: 8px; border-radius: 5px; margin-bottom: 5px; }
   </style>
 </head>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDDftcO_zY01JAFkM_Gi_SK_mDYgM4aPfU",
+  authDomain: "carros102-55a32.firebaseapp.com",
+  projectId: "carros102-55a32",
+  storageBucket: "carros102-55a32.firebasestorage.app",
+  messagingSenderId: "783382590303",
+  appId: "1:783382590303:web:7a34edcaeb54a07d4c3cea",
+  measurementId: "G-8P2Z9F4V4P"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
 <body>
+  <div id="chat-container">
+  <h3>¿Falta alguna placa?</h3>
+  <input type="text" id="chatInput" placeholder="Escribe la placa faltante">
+  <button onclick="enviarMensaje()">Enviar</button>
+  <ul id="chatMensajes" style="list-style: none; padding-left: 0;"></ul>
+</div>
   <h1>Buscador de Placas 102</h1>
 
   <input type="text" id="inputPlaca" placeholder="Ingresa una placa">
@@ -165,5 +202,39 @@
       this.value = this.value.toUpperCase();
     });
   </script>
+  <script>
+  function enviarMensaje() {
+    const input = document.getElementById('chatInput');
+    const mensaje = input.value.trim().toUpperCase();
+    if (mensaje === '') return;
+
+    db.ref('mensajes').push({
+      placa: mensaje,
+      timestamp: Date.now()
+    });
+
+    input.value = '';
+  }
+
+  function cargarMensajes() {
+    const lista = document.getElementById('chatMensajes');
+    db.ref('mensajes').on('value', snapshot => {
+      lista.innerHTML = '';
+      const datos = snapshot.val();
+      for (let key in datos) {
+        const placa = datos[key].placa;
+        const li = document.createElement('li');
+        li.textContent = `Placa faltante: ${placa}`;
+        lista.appendChild(li);
+      }
+    });
+  }
+
+  // Ejecutar cuando la página carga
+  window.onload = function () {
+    if (typeof verificarAcceso === "function") verificarAcceso();
+    cargarMensajes();
+  };
+</script>
 </body>
 </html>
