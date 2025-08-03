@@ -2,43 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Buscador de Placas 102</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; display: none; }
-    input, button { padding: 8px; margin: 5px; }
-    .resultado { margin-top: 15px; font-weight: bold; }
+    body { font-family: Arial, sans-serif; padding: 20px; display: none; background-color: #f9f9f9; }
+    input, button { padding: 10px; margin: 5px; font-size: 16px; }
+    button { cursor: pointer; }
+    .resultado { margin-top: 15px; font-weight: bold; font-size: 18px; }
     .verde { color: green; }
-    .amarillo { color: goldenrod; }
+    .amarillo { color: orange; }
     .rojo { color: red; }
-    #chat-container {
-      margin-top: 30px;
-      padding-top: 10px;
-      border-top: 2px solid #ccc;
-    }
-    #chat-mensajes {
-      margin-top: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      max-height: 200px;
-      overflow-y: auto;
-      background: #f9f9f9;
-    }
-    .mensaje {
-      margin-bottom: 8px;
-      padding: 6px;
-      background: #eaeaea;
-      border-radius: 4px;
-    }
+    #chat-container { margin-top: 30px; }
+    #chat-mensajes { margin-top: 10px; border-top: 1px solid #ccc; padding-top: 10px; }
+    .mensaje { background-color: #eee; padding: 8px; border-radius: 5px; margin-bottom: 5px; }
   </style>
 </head>
 <body>
-  <h2>Buscador de Placas 102</h2>
-  <input type="text" id="inputPlaca" placeholder="Ingrese una placa"> 
-  <button onclick="buscarPlaca()">Buscar</button> 
+  <h1>Buscador de Placas 102</h1>
+
+  <input type="text" id="inputPlaca" placeholder="Ingresa una placa">
+  <button onclick="buscarPlaca()">Buscar</button>
   <button onclick="borrarInput()">Borrar</button>
-  <p class="resultado" id="resultado"></p>
+  <div id="resultado"></div>
 
   <div id="chat-container">
     <h3>¿Falta una placa?</h3>
@@ -49,42 +35,33 @@
 
   <script>
     const CONTRASEÑA = "clave102";
-    const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B", "YME457A", 
-    "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", "XS5145A", "SY59773"];
 
-    const placas =  ["YFC110B", "1TBT3", "YHK447B", "YFU169AVW", "YTV719A", "YHS1595", "YJM740B", "YDW917A", "A385XED", 
-      "YDM580A", "XH7015A", "W29AZX", "YJL7449", "XY5132A", "YJT654B", "YHT6309", "YFT777B", "YEE271B", 
-      "NJJ7755", "YAT101B", "SL02478", "XT1557A", "XV83007", "YFE165A", "YKB365A", "YJL8592", "PM9640A", 
-      "YKD551A", "YJR794B", "YJ4343A", "NDP6140", "YSS129A", "XZL281A", "YHT512A", "YHY483A", "YKF2411", 
-      "YPD791B", "693YFH", "YEM577A", "YPV801A", "YEM428A", "YHS486B", "XM7582A", "YTK055A", "YKF7339", 
-      "YKD988A", "WMH775A", "YSS778A", "YFV294B", "YKF2411", "YUB124A", "YKX7020", "YHH8297", "YAT764A", 
-      "YME394A", "YSK999A", "YSC489A", "YHS584A", "MDL1348", "YKB2331", "XUY745A", "LA17469", "PSZ4526", 
-      "NZT2216", "YKB441A", "YL3288A", "YNL570A", "XV47117", "YFD883A", "XW5698B", "YL1318A", "YMA713A", 
-      "YJT498B", "YDY554B", "YCG473A", "YJZ763A", "YFU707A", "XYZ141B", "YLB216B", "YJT853B", "YDC994A", 
-      "XWS698B", "YGK319B", "YPS033B", "YTK137A", "MLT8314", "XT1797A", "YJL4749", "YPC912B", "YRP992B", 
-      "UXC804A", "UJD401A", "SL86529", "YJS738B", "XHJ365B", "YKC863A", "YAG241C", "XZX168C", "YMC983B",
-      "YHK377B", "YTB495B", "XYB236C", "YUT102B", "YTZ517A", "YGU474B", "YVV800B", "YUT464B", "RDY230C",
-      "YUC327A", "YHT7162", "YKC838A", "XYY860B", "YTH666A", "YPT383A", "YLC9246", "YSK577B", "YTH166A",
-      "YME176A", "YSK353B", "YCA625B", "YRM301B", "YGF931B", "YKB551A", "YTV752A", "YKL5581", "YDD098A", 
-      "YGG204B", "Z77BDF", "TZG1282", "YTV699A", "YL3463A", "XYY944B", "YEB798A", "S79BLA", "YLB335B", 
-      "VAJ291C", "YVW525B", "XF1679A", "YEE304B", "YTK359A", "YKA783A", "YLZ535A", "YVW243B", "YHT393B",
-      "YDV770B", "X21BNS", "YUN741A", "RDW737D", "YBN776A", "LXA365A", "XYE605A", "YDX762B", "YKC821A", 
-      "YFU357B", "YJL213B", "YHT084B", "YKB329A", "YTK519A", "YKC2081", "K13BKA", "YGT952B", "TXH1766", 
-      "XWC540A", "XT1920A", "YNJ523A", "G41AKK", "YSL341B", "TYE5989", "XVS132A", "YVV477A", "YJR903A", 
-      "YPV992A", "YGG210B", "YJV233B", "YST498B", "YLB767B", "YSL272B", "YCY489A", "YKB781A", "YJL9283", 
-      "YPU480A", "YCK724A", "WG2146B", "YNB831A", "YRD926B", "699TDJ", "PSG1131", "XYE451A", "YVA202A", 
-      "YHT225A", "YED012B", "YRM087B", "YSL282B", "YVZ814A", "YTX709B", "EHD616B", "YMD064B", "YKG692A", 
-      "XWH860B", "YKB281A", "YCA252A", "XYX270B", "YL2397A", "WTN784B", "LMM609A", "XN61090", "YKA143A", 
-      "YDW875B", "YHT065B", "YRS458B", "YAH663A", "XZL332A", "XZY328C", "YGJ4855", "YHK067B", "YLY769A", 
-      "XY5225A", "65F332", "SN26488", "YTZ497A", "YFU169A", "YUA786A", "XV4745A", "YF9178A", "YGP892A", 
-      "YGZ9829", "XV44726", "WH0796A", "WH0005B", "NYD1332", "YSK331B", "SN99554", "HB1704D", "XS4379A", 
-      "YTK955A", "YM5316A", "XHT512A", "YGG477A", "YFU294B", "A076XDC", "YJK2150", "PDZ7761", "YNB541B", 
-      "YHS826B", "YKG543A", "YTP677A", "XYE457A", "YVA624A", "YSY729B", "LTW909A", "WB2059C", "YGE400A",
-      "YVA018A", "YSY661B", "YFE102A", "YRR285B", "YRS423B", "XUH805B", "YTB215B", "YRR970B", "LUZ444B", 
-      "YPV781A", "YZ3892D", "WM4520B", "SP82996", "XXX902D", "YED082B", "YKD893A", "YPW268A", "N95AGS", 
-      "XR3787B", "U27AZY", "YTB299B", "XYJ8706", "YSC561B", "YUA711A", "YEW218A", "UWF657R", "XHE664C", 
-      "YGG350B", "XK3415A", "XZH529B", "XT6019B", "YPT766A", "A05BDM", "YKD780A", "YEU548A", "XZX855C",
-      "YAT635A", "GY9625G", "LF03624", "YGM800A", "YKG421A", "YTV769A", ];
+    const placasTemporales = ["YKJ7867", "YFU725A", "YGG477B", "YMS324B", "YME457A", 
+      "YED397B", "XZW243A", "YRR356B", "YJL8749", "YE3792A", "XS5145A", "SY59773"];
+
+    const placas = [
+      "YHU362B", "XWA932A", "YEF857A", "YEG462B", "YEB715B", "YGY624B", "YGG842A", "YHX988B", 
+      "YHE619B", "YGU546B", "YJR684B", "YKR958A", "YKT887A", "YJY944A", "YLU143A", "YLS123A", 
+      "YMC612A", "YMK943A", "YMU690A", "YMR208A", "YNS254A", "YNE119A", "YNN848A", "YNW921A",
+      "YNU359A", "YNT814A", "YNK427A", "YPC824A", "YPB832A", "YPH539A", "YQG424A", "YQQ872A",
+      "YQT982A", "YQM312A", "YRS626A", "YRV763A", "YRL690A", "YRG982A", "YRR642A", "YRP663A",
+      "YSL508A", "YSR979A", "YSY924A", "YSC351A", "YTC804A", "YTW872A", "YTT904A", "YTS834A",
+      "YUC186A", "YUF469A", "YUV801A", "YUM539A", "YVL398A", "YVB772A", "YVE744A", "YVP682A",
+      "YWP942A", "YWT783A", "YWE768A", "YWY982A", "YXL113A", "YXN568A", "YXQ427A", "YXM284A",
+      "YXU972A", "YXT812A", "YXE659A", "YYU248A", "YYR278A", "YYK209A", "YYF821A", "YYL912A",
+      "YZY589A", "YZQ216A", "YZR118A", "YZK204A", "ZAD445A", "ZAE706A", "ZAS343A", "ZAZ667A",
+      "ZAE706A", "ZBL474A", "ZBN681A", "ZBV801A", "ZBW286A", "ZCG967A", "ZCJ927A", "ZCH157A",
+      "ZCU636A", "ZCV364A", "ZCY744A", "ZDH402A", "ZDF252A", "ZDR114A", "ZEA351A", "ZEX234A",
+      "ZFS642A", "ZFP902A", "ZGE478A", "ZGC236A", "ZHC235A", "ZHZ376A", "ZHX347A", "ZJD716A",
+      "ZJP789A", "ZJR786A", "ZJN627A", "ZJU435A", "ZKD972A", "ZKV745A", "ZKY162A", "ZLH736A",
+      "ZLL292A", "ZMC283A", "ZMC979A", "ZMV358A", "ZNC372A", "ZNZ768A", "ZNZ624A", "ZPM343A",
+      "ZPH214A", "ZPJ744A", "ZPW206A", "ZPY681A", "ZQF158A", "ZQZ448A", "ZQQ706A", "ZRF382A",
+      "ZRV425A", "ZRM553A", "ZRL298A", "ZSK931A", "ZSA414A", "ZSC479A", "ZSM846A", "ZSU161A",
+      "ZST291A", "ZTA851A", "ZTU498A", "ZTT134A", "ZTN834A", "ZUE803A", "ZUU253A", "ZUF293A",
+      "ZVG306A", "ZVB783A", "ZVC637A", "ZVR752A", "ZVQ492A", "ZVU374A", "ZWJ443A", "ZWT659A",
+      "ZWP508A", "ZWC219A", "ZWR514A", "ZWT865A", "ZXJ646A", "ZXA819A", "ZXC292A", "ZXS785A",
+      "ZXY175A", "ZYF394A", "ZYE498A", "ZYP364A", "ZYR319A", "ZYZ801A"
+    ];
 
     function verificarAcceso() {
       const accesoConcedido = localStorage.getItem('acceso102');
@@ -104,16 +81,8 @@
       }
     }
 
-    document.getElementById('inputPlaca').addEventListener('input', function () {
-      this.value = this.value.toUpperCase();
-    });
-
-    document.getElementById('placaFaltante').addEventListener('input', function () {
-      this.value = this.value.toUpperCase();
-    });
-
     function buscarPlaca() {
-      const placa = document.getElementById('inputPlaca').value.trim();
+      const placa = document.getElementById('inputPlaca').value.trim().toUpperCase();
       const resultado = document.getElementById('resultado');
 
       if (placas.includes(placa)) {
@@ -134,15 +103,16 @@
     }
 
     function enviarPlaca() {
-      const nuevaPlaca = document.getElementById('placaFaltante').value.trim();
+      const nuevaPlaca = document.getElementById('placaFaltante').value.trim().toUpperCase();
       if (nuevaPlaca === '') return;
 
       let placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
+
       if (!placasFaltantes.includes(nuevaPlaca)) {
         placasFaltantes.push(nuevaPlaca);
         localStorage.setItem('placasFaltantes', JSON.stringify(placasFaltantes));
-        document.getElementById('placaFaltante').value = '';
         mostrarChat();
+        document.getElementById('placaFaltante').value = '';
       }
     }
 
@@ -152,19 +122,19 @@
       const placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
 
       placasFaltantes.forEach(placa => {
-        if (!placas.includes(placa) && !placasTemporales.includes(placa)) {
-          const div = document.createElement('div');
-          div.className = 'mensaje';
-          div.textContent = `Placa faltante: ${placa}`;
-          contenedor.appendChild(div);
-        }
+        const div = document.createElement('div');
+        div.className = 'mensaje';
+        div.textContent = `Placa sugerida: ${placa}`;
+        contenedor.appendChild(div);
       });
+    }
 
-      // Eliminar las que ya se añadieron a la lista
-      const filtradas = placasFaltantes.filter(p => 
+    function limpiarPlacasYaExistentes() {
+      let placasFaltantes = JSON.parse(localStorage.getItem('placasFaltantes') || '[]');
+      placasFaltantes = placasFaltantes.filter(p =>
         !placas.includes(p) && !placasTemporales.includes(p)
       );
-      localStorage.setItem('placasFaltantes', JSON.stringify(filtradas));
+      localStorage.setItem('placasFaltantes', JSON.stringify(placasFaltantes));
     }
 
     if ('serviceWorker' in navigator) {
@@ -172,9 +142,18 @@
     }
 
     window.onload = function () {
-  verificarAcceso();
-  mostrarChat();
-};
+      verificarAcceso();
+      limpiarPlacasYaExistentes();
+      mostrarChat();
+    };
+
+    document.getElementById('inputPlaca').addEventListener('input', function () {
+      this.value = this.value.toUpperCase();
+    });
+
+    document.getElementById('placaFaltante').addEventListener('input', function () {
+      this.value = this.value.toUpperCase();
+    });
   </script>
 </body>
 </html>
