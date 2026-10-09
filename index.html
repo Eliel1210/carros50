@@ -161,25 +161,48 @@ try {
       document.getElementById('resultado').textContent = '';
     }
 
-    function enviarMensaje() {
-      const input = document.getElementById('chatInput');
-      const mensaje = input.value.trim().toUpperCase();
-      if (mensaje === '') return;
-
-      db.ref('mensajes').push({
-        placa: mensaje,
-        timestamp: Date.now()
-      });
-
-      input.value = '';
-    }
-
     
+function enviarMensaje() {
+  const input = document.getElementById('chatInput');
+
+  if (!input) {
+    console.error('No se encontró el campo del chat.');
+    return;
+  }
+
+  const mensaje = input.value.trim().toUpperCase();
+
+  if (mensaje === '') return;
+
+  if (typeof db === 'undefined' || !db) {
+    console.error('Firebase no está disponible. El buscador seguirá funcionando.');
+    alert('El chat no está disponible en este momento.');
+    return;
+  }
+
+  db.ref('mensajes').push({
+    placa: mensaje,
+    timestamp: Date.now()
+  })
+  .then(() => {
+    input.value = '';
+  })
+  .catch(error => {
+    console.error('Error al enviar el mensaje:', error);
+    alert('No se pudo enviar la placa. Inténtalo de nuevo.');
+  });
+}
+
 function cargarMensajes() {
   const lista = document.getElementById('chatMensajes');
 
-  if (!db || !lista) {
-    console.error('El chat no está disponible; el buscador seguirá funcionando.');
+  if (!lista) {
+    console.error('No se encontró la lista del chat.');
+    return;
+  }
+
+  if (typeof db === 'undefined' || !db) {
+    console.error('Firebase no está disponible; el buscador seguirá funcionando.');
     return;
   }
 
@@ -190,15 +213,18 @@ function cargarMensajes() {
 
     for (const key in datos) {
       const mensaje = datos[key];
+
       if (!mensaje || !mensaje.placa) continue;
 
-      const placa = mensaje.placa;
+      const placa = String(mensaje.placa).trim().toUpperCase();
 
       if (
         placas.includes(placa) ||
         placasTemporales.includes(placa)
       ) {
-        db.ref('mensajes/' + key).remove();
+        db.ref('mensajes/' + key).remove().catch(error => {
+          console.error('No se pudo eliminar la placa repetida:', error);
+        });
         continue;
       }
 
@@ -210,6 +236,7 @@ function cargarMensajes() {
     console.error('Error al cargar mensajes:', error);
   });
 }
+
 
 
     if ('serviceWorker' in navigator) {
