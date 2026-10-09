@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'carros50-v65';
+const CACHE_NAME = 'carros50-v66';
 
 const urlsToCache = [
   './',
