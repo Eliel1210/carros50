@@ -34,8 +34,19 @@
     measurementId: "G-8P2Z9F4V4P"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  
+let db = null;
+
+try {
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    db = firebase.database();
+  }
+} catch (error) {
+  console.error('Error al iniciar Firebase:', error);
+}
 </script>
 
 <body>
@@ -163,16 +174,30 @@
       input.value = '';
     }
 
-    function cargarMensajes() {
+    
+function cargarMensajes() {
   const lista = document.getElementById('chatMensajes');
+
+  if (!db || !lista) {
+    console.error('El chat no está disponible; el buscador seguirá funcionando.');
+    return;
+  }
+
   db.ref('mensajes').on('value', snapshot => {
     lista.innerHTML = '';
-    const datos = snapshot.val();
-    for (let key in datos) {
-      const placa = datos[key].placa;
 
-      // Si la placa ya está en la lista oficial, eliminarla del chat
-      if (placas.includes(placa) || placasTemporales.includes(placa)) {
+    const datos = snapshot.val() || {};
+
+    for (const key in datos) {
+      const mensaje = datos[key];
+      if (!mensaje || !mensaje.placa) continue;
+
+      const placa = mensaje.placa;
+
+      if (
+        placas.includes(placa) ||
+        placasTemporales.includes(placa)
+      ) {
         db.ref('mensajes/' + key).remove();
         continue;
       }
@@ -181,8 +206,11 @@
       li.textContent = `Placa faltante: ${placa}`;
       lista.appendChild(li);
     }
+  }, error => {
+    console.error('Error al cargar mensajes:', error);
   });
 }
+
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js');
