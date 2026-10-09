@@ -1,4 +1,4 @@
-const CACHÉ_ÑAME = 'placas-caché-v62'; //  cambia el número en cada nueva versión
+const CACHE_NAME = 'placas-cache-v63'; //  cambia el número en cada nueva versión
 const urlsToCache = ['.', 'index.HTML', 'manifest.json', 'icon.png'];
 
 self.addEventListener('install', e => {
