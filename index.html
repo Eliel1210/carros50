@@ -216,10 +216,22 @@ function cargarMensajes() {
       navigator.serviceWorker.register('service-worker.js');
     }
 
-    window.onload = function () {
-      verificarAcceso();
-      cargarMensajes();
-    };
+    
+window.addEventListener('load', function () {
+  try {
+    verificarAcceso();
+  } catch (error) {
+    console.error('Error al verificar el acceso:', error);
+    return;
+  }
+
+  try {
+    cargarMensajes();
+  } catch (error) {
+    console.error('Error al cargar los mensajes:', error);
+  }
+});
+
 
     document.getElementById('inputPlaca').addEventListener('input', function () {
       this.value = this.value.toUpperCase();
